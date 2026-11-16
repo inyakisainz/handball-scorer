@@ -2,6 +2,10 @@
 
 El número coincide con `VERSION` en `public/sw.js`.
 
+## Sin cambio de versión (2026-11-16)
+- Documentación pública: instalación y guía de uso, con capturas.
+- Publicación automática de `public/` en GitHub Pages.
+
 ## v8 (2026-11-16)
 - Nueva fórmula de valoración: 7 m aparte, pérdidas y sanciones con más peso, y goles encajados para los porteros.
 - Valoración por 60 minutos (Val/60′) en tablas y fichas.
