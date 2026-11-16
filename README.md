@@ -57,6 +57,7 @@ No hay dependencias ni paso de compilación. Toda la aplicación está en `publi
 | `public/manifest.webmanifest` | Datos para instalarla como app |
 | `public/icon-*.png` | Iconos |
 | `.github/workflows/pages.yml` | Publica `public/` en GitHub Pages en cada push a `main` |
+| `LICENSE` | Texto de la licencia AGPL v3 |
 
 Para probar en local:
 
@@ -71,4 +72,10 @@ Al publicar una versión nueva, cambia `VERSION` en `public/sw.js` y añade una 
 
 ## Licencia
 
-Este repositorio todavía no tiene licencia. Mientras no se publique una, el código puede consultarse pero no hay permiso para reutilizarlo ni redistribuirlo.
+Copyright (C) 2026 Iñaki Sainz
+
+Este programa es software libre: puedes redistribuirlo y modificarlo bajo los términos de la [GNU Affero General Public License, versión 3](LICENSE), publicada por la Free Software Foundation.
+
+Se distribuye con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de comerciabilidad o de adecuación a un propósito particular. Consulta la licencia para más detalles.
+
+En la práctica: puedes usarla, estudiarla, modificarla y redistribuirla, también con fines comerciales. Si distribuyes una versión modificada, o la ofreces a otras personas como servicio web, debes poner a su disposición el código fuente de esa versión bajo esta misma licencia. La propia app enlaza a este repositorio desde la pestaña Datos.

@@ -2,6 +2,10 @@
 
 El número coincide con `VERSION` en `public/sw.js`.
 
+## v9 (2026-11-16)
+- Licencia GNU AGPL v3.
+- Enlace al código fuente en la pestaña Datos.
+
 ## Sin cambio de versión (2026-11-16)
 - Documentación pública: instalación y guía de uso, con capturas.
 - Publicación automática de `public/` en GitHub Pages.

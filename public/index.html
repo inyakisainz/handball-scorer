@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<!-- Handball Scorer · Copyright (C) 2026 Iñaki Sainz · GNU AGPL v3 · https://github.com/inyakisainz/handball-scorer -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anotador de balonmano</title>
@@ -1014,7 +1015,8 @@ function renderAdmin(){
         <label class="act" style="cursor:pointer">Importar copia<input id="impF" type="file" accept="application/json,.json" hidden></label>
         <button class="act" id="expCsv">Todos los partidos (CSV)</button><button class="act" id="loadDemo">Cargar partido de ejemplo</button></div>
       <p class="note" id="adMsg">La copia incluye todos los equipos, rivales, competiciones y partidos. Importar una copia sustituye todo lo que haya en este dispositivo.</p></section>
-    <section class="panel"><span class="lbl">Estado</span><p class="note">${plural(DB.teams.length,'equipo','equipos')} · ${plural(DB.matches.filter(m=>!m.demo).length,'partido','partidos')} · funcionamiento sin conexión: <b>${navigator.serviceWorker&&navigator.serviceWorker.controller?'listo':'se activa al recargar una vez con conexión'}</b> · almacenamiento protegido: <b id="psSt">comprobando</b></p></section>`;
+    <section class="panel"><span class="lbl">Estado</span><p class="note">${plural(DB.teams.length,'equipo','equipos')} · ${plural(DB.matches.filter(m=>!m.demo).length,'partido','partidos')} · funcionamiento sin conexión: <b>${navigator.serviceWorker&&navigator.serviceWorker.controller?'listo':'se activa al recargar una vez con conexión'}</b> · almacenamiento protegido: <b id="psSt">comprobando</b></p>
+      <p class="note">Software libre bajo licencia GNU AGPL v3, sin garantía. <a class="lnk" href="https://github.com/inyakisainz/handball-scorer" target="_blank" rel="noopener">Código fuente</a></p></section>`;
   $('admin').innerHTML=strip+nav+h;
   const f=addWhat==='team'?$('ntName'):addWhat==='comp'?$('ncName'):addWhat==='season'?$('nsName'):null;if(f)f.focus();
   if(adTab==='data'&&navigator.storage&&navigator.storage.persisted)navigator.storage.persisted().then(p=>{const e=$('psSt');if(e)e.textContent=p?'sí':'no garantizado'}).catch(()=>{});

@@ -1,5 +1,5 @@
 // Sube este número cada vez que publiques una versión nueva de index.html.
-const VERSION = 'anotador-v8';
+const VERSION = 'anotador-v9';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
