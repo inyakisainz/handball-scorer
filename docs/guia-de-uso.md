@@ -84,8 +84,8 @@ En móvil, un selector alterna entre **Tiro** y **Otra acción**. En tablet se v
 - Los jugadores en pista aparecen arriba; el banquillo, debajo y atenuado.
 - Para un cambio: **Cambios**, toca quién sale y quién entra (máximo siete en pista) y **Hecho**.
 - **Exclusión de 2 minutos:** el jugador sale de pista solo y vuelve solo al cumplirse 2 minutos de juego. Mientras dura, se ve la cuenta atrás junto al botón Cambios. El tiempo solo corre con el reloj en marcha y continúa en la parte siguiente si hace falta.
-- **Roja:** el jugador desaparece de la lista para el resto del partido. El equipo juega 2 minutos con uno menos; al cumplirse, la app avisa de que falta un jugador en pista para que metas a otro con Cambios.
-- Si deshaces o borras la sanción, la cuenta atrás se cancela.
+- **Roja:** el jugador desaparece de la lista para el resto del partido, sin cuenta atrás. La app avisa al momento de que falta un jugador en pista para que metas a otro con Cambios.
+- Si deshaces o borras una exclusión, su cuenta atrás se cancela.
 - Si anotas una acción de alguien que figura en el banquillo, la app te avisa para que revises los cambios.
 
 Marcar los cambios es lo que permite calcular los minutos de cada jugador.

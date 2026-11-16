@@ -62,7 +62,6 @@ header{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(-
 @keyframes stopP{50%{filter:brightness(.8)}}
 .pent{display:flex;gap:5px;flex-wrap:wrap}
 .pent i{font-style:normal;font-weight:600;color:var(--ink);padding:2px 7px;border-radius:7px;background:var(--bg);border-left:4px solid var(--them);font-variant-numeric:tabular-nums;white-space:nowrap}
-.pent i.roj{border-left-color:var(--bad)}
 .gsep.miss span:first-child{color:var(--bad);font-weight:600} .gsep.miss b{color:var(--bad)}
 .clock svg{width:16px;height:16px;fill:currentColor;stroke:none}
 .per{font-family:var(--display);font-weight:600;font-size:16px;height:44px;padding:0 10px;border-radius:var(--r);border:1px solid var(--line);color:var(--muted)}
@@ -512,9 +511,9 @@ function action(act,teamEv){
   const on=onNow();
   if(act==='exc'||act==='roj'){const aid=M.nid-1,who=`${pl} ${nm(pl)}`;
     if(on&&on.includes(pl)){M.ev.push({id:M.nid++,t:M.clk[M.per-1],per:M.per,team:'us',kind:'sub',on:on.filter(n=>n!==pl)});
-      (M.pen=M.pen||[]).push({ev:aid,pl,type:act,left:PEN});
-      hint(act==='exc'?`${who} sale 2 minutos. Volverá solo a pista al cumplirlos.`:`${who}, descalificado. El equipo juega 2 minutos con uno menos; después habrá que meter a otro jugador.`,act==='roj')}
-    else if(act==='roj')hint(`${who}, descalificado: sale de la lista de jugadores.`,1);
+      if(act==='exc'){(M.pen=M.pen||[]).push({ev:aid,pl,type:'exc',left:PEN});hint(`${who} sale 2 minutos. Volverá solo a pista al cumplirlos.`)}
+      else hint(`${who}, descalificado para el resto del partido. Mete a otro jugador con Cambios.`,1)}
+    else if(act==='roj')hint(`${who}, descalificado para el resto del partido: sale de la lista de jugadores.`,1);
     render()}
   else if(!['ama','exc','roj'].includes(act))benchWarn(tm,pl);
 }
@@ -730,16 +729,15 @@ function vTemp(){
     <svg class="chart" viewBox="0 0 ${W} ${H}">${g}${ser('gk','var(--muted)',1,'paradas')}${ser('ef','var(--us)',0,'eficacia')}</svg></section>`+tbl+duel}
 
 /* --- sanciones en curso --- */
-const PEN=120,dq=()=>M.ev.filter(e=>e.kind==='act'&&e.act==='roj'&&e.team==='us'&&e.pl!=null).map(e=>e.pl),pens=()=>(M.pen||[]).filter(p=>p.left>0);
-const penTxt=()=>{const ps=pens();return ps.map(p=>`<i class="${p.type}">${p.type==='exc'?'2′':'Roja'} ${p.pl}${ps.length===1?' '+nm(p.pl):''} · ${fmt(p.left)}</i>`).join('')};
+const PEN=120,dq=()=>M.ev.filter(e=>e.kind==='act'&&e.act==='roj'&&e.team==='us'&&e.pl!=null).map(e=>e.pl),pens=()=>(M.pen||[]).filter(p=>p.left>0&&p.type==='exc');
+const penTxt=()=>{const ps=pens();return ps.map(p=>`<i>2′ ${p.pl}${ps.length===1?' '+nm(p.pl):''} · ${fmt(p.left)}</i>`).join('')};
 function penBar(){const el=$('penBar');if(el)el.innerHTML=penTxt()}
 function penTick(){const ps=pens();if(!ps.length)return;let ch=false;
   ps.forEach(p=>{if(!M.ev.some(e=>e.id===p.ev&&e.kind==='act'&&e.act===p.type)){p.left=0;ch=true;return}
     if(--p.left>0)return;ch=true;
-    if(p.type==='exc'){const on=onNow();if(on&&!on.includes(p.pl)&&on.length<7&&!dq().includes(p.pl)){
-        M.ev.push({id:M.nid++,t:M.clk[M.per-1],per:M.per,team:'us',kind:'sub',on:[...on,p.pl].sort((a,b)=>a-b)});hint(`${p.pl} ${nm(p.pl)} vuelve a pista tras la exclusión.`)}}
-    else hint('Han pasado los 2 minutos de la roja. Mete a otro jugador con Cambios.',1)});
-  M.pen=M.pen.filter(p=>p.left>0);
+    const on=onNow();if(on&&!on.includes(p.pl)&&on.length<7&&!dq().includes(p.pl)){
+      M.ev.push({id:M.nid++,t:M.clk[M.per-1],per:M.per,team:'us',kind:'sub',on:[...on,p.pl].sort((a,b)=>a-b)});hint(`${p.pl} ${nm(p.pl)} vuelve a pista tras la exclusión.`)}});
+  M.pen=M.pen.filter(p=>p.left>0&&p.type==='exc');
   if(ch)render();else penBar()}
 /* --- jugadores en pista --- */
 const subsOf=m=>m.ev.filter(e=>e.kind==='sub').sort((a,b)=>a.per-b.per||a.t-b.t||a.id-b.id),subs=()=>subsOf(M);

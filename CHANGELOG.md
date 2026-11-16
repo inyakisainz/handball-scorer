@@ -2,6 +2,9 @@
 
 El número coincide con `VERSION` en `public/sw.js`.
 
+## v11 (2026-11-16)
+- Roja: sin cuenta atrás. El jugador queda fuera del partido y la app pide al momento meter a otro.
+
 ## v10 (2026-11-16)
 - Un jugador excluido vuelve solo a pista al cumplirse 2 minutos de juego.
 - Roja: el jugador desaparece de la lista y, pasados los 2 minutos, la app avisa de que falta un jugador en pista.
