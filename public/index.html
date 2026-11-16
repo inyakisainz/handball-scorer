@@ -54,6 +54,16 @@ header{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(-
 .clock{display:flex;align-items:center;gap:6px;height:44px;padding:0 12px;border-radius:var(--r);border:1px solid var(--line);
   font-family:var(--display);font-weight:600;font-size:22px;font-variant-numeric:tabular-nums}
 .clock.run{border-color:var(--good);color:var(--good)}
+.clock:not(.run){background:var(--bad);border-color:var(--bad);color:#fff}
+#stopBar{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:6px 16px;background:var(--bad);color:#fff;font-size:14px;text-align:center;animation:stopP 1.6s ease-in-out infinite}
+#stopBar[hidden]{display:none}
+#stopBar.fin{background:var(--sel);color:var(--on-sel);animation:none}
+#stopBar .ic{width:18px;height:18px;stroke-width:3}
+@keyframes stopP{50%{filter:brightness(.8)}}
+.pent{display:flex;gap:5px;flex-wrap:wrap}
+.pent i{font-style:normal;font-weight:600;color:var(--ink);padding:2px 7px;border-radius:7px;background:var(--bg);border-left:4px solid var(--them);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pent i.roj{border-left-color:var(--bad)}
+.gsep.miss span:first-child{color:var(--bad);font-weight:600} .gsep.miss b{color:var(--bad)}
 .clock svg{width:16px;height:16px;fill:currentColor;stroke:none}
 .per{font-family:var(--display);font-weight:600;font-size:16px;height:44px;padding:0 10px;border-radius:var(--r);border:1px solid var(--line);color:var(--muted)}
 
@@ -286,7 +296,7 @@ label[hidden]{display:none}
   .results .res{height:54px;font-size:15px;gap:6px}
   .results .minor .res{height:54px;flex-direction:column;gap:1px;font-size:11px}
 }
-@media (prefers-reduced-motion:reduce){ .pulse{animation:none;box-shadow:0 0 0 3px var(--bad)} }
+@media (prefers-reduced-motion:reduce){ .pulse{animation:none;box-shadow:0 0 0 3px var(--bad)} #stopBar{animation:none} }
 </style>
 </head>
 <body>
@@ -304,6 +314,7 @@ label[hidden]{display:none}
   <button class="ibtn" id="undo" aria-label="Deshacer" title="Deshacer"></button>
   <button class="ibtn" id="bell" aria-label="Marcar evento pendiente" title="Evento pendiente"></button>
 </header>
+<button id="stopBar" hidden></button>
 <button id="ctx" aria-label="Cambiar de equipo, competición o partido"><span id="ctxT"></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
 
 <main id="reg">
@@ -388,7 +399,8 @@ label[hidden]{display:none}
     <h2 id="hT">Cómo anotar</h2>
     <ol>
       <li><b>Siempre primero quién:</b> toca el jugador (o el dorsal rival).</li>
-      <li><b>Cambios:</b> pulsa Cambios, marca los que están en pista (máximo 7) y pulsa Hecho. Así se cuenta el tiempo de cada jugador.</li>
+      <li><b>Cambios:</b> pulsa Cambios, marca los que están en pista (máximo 7) y pulsa Hecho. Así se cuenta el tiempo de cada jugador. Un excluido vuelve solo a los 2 minutos de juego.</li>
+      <li><b>Reloj:</b> si está parado, una franja roja lo avisa; tócala para arrancarlo.</li>
       <li><b>Si es un tiro:</b> zona de la pista, cuadrante de portería y resultado (gol, parada, fuera, palo o blocado).</li>
       <li><b>Si es otra acción:</b> un solo botón del bloque Otra acción (pérdida, robo, falta, 2 minutos…). No hace falta zona ni portería.</li>
       <li><b>Acciones de equipo</b> (tiempo muerto, pasivo, portería vacía): un botón, sin jugador.</li>
@@ -423,7 +435,7 @@ const I={
   menu:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0112 0M16 5.2a3 3 0 010 5.6M17.5 14.6A6 6 0 0121 20"/>',
   edit:'<path d="M4 20l4-1L19 8l-3-3L5 16z"/>',
   reg:'<path d="M3 20V5h18v15"/><path d="M8 20a4 4 0 018 0"/>',
-  play:'<path d="M7 4v16l13-8z"/>', pause:'<path d="M7 4h4v16H7zM14 4h4v16h-4z"/>'
+  play:'<path d="M7 4v16l13-8z"/>', pause:'<path d="M7 4h4v16H7zM14 4h4v16h-4z"/>',pausa:'<path d="M8 5v14M16 5v14"/>'
 };
 const ic=k=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${I[k]}</svg>`;
 const AI={per:ic('per'),rob:ic('rob'),asi:ic('asi'),p7:'<b>7m</b>',fat:ic('fat'),blc:ic('blo'),fal:ic('fal'),c7:'<b>7m</b>',exc:'<b>2′</b>',ama:'<i class="card" style="background:#E3B200"></i>',roj:'<i class="card" style="background:var(--bad)"></i>',tm:ic('tm'),pas:ic('pas'),vac:ic('vac')};
@@ -481,7 +493,7 @@ function commit(ev){
   if(!wasEdit&&(ev.kind==='shot'||ev.act==='per'||ev.act==='fat'))S.team=ev.team==='us'?'them':'us';
   if(!wasEdit&&ev.act==='rob')S.team=ev.team;
   if(ev.kind==='sub')setGkFromLineup(ev.on);
-  hint();render();
+  hint(!wasEdit&&!S.run&&ev.kind!=='sub'&&M.clk[M.per-1]<M.perMin*60?'Anotado con el reloj parado. Arráncalo si el partido sigue en juego.':'',1);render();
 }
 function benchWarn(team,pl){const on=team==='us'&&pl!=null?onNow():null;if(on&&!on.includes(pl))hint(`${pl} ${nm(pl)} figura en el banquillo. Revisa Cambios.`,1)}
 function shot(res){
@@ -498,7 +510,12 @@ function action(act,teamEv){
   commit({team:S.team,kind:'act',pl:teamEv?null:S.pl,act});
   if(ed||tm!=='us'||pl==null)return;
   const on=onNow();
-  if((act==='exc'||act==='roj')&&on&&on.includes(pl)){M.ev.push({id:M.nid++,t:M.clk[M.per-1],per:M.per,team:'us',kind:'sub',on:on.filter(n=>n!==pl)});hint(`${pl} ${nm(pl)} sale de pista por la sanción. Cuando vuelva, márcalo en Cambios.`);render()}
+  if(act==='exc'||act==='roj'){const aid=M.nid-1,who=`${pl} ${nm(pl)}`;
+    if(on&&on.includes(pl)){M.ev.push({id:M.nid++,t:M.clk[M.per-1],per:M.per,team:'us',kind:'sub',on:on.filter(n=>n!==pl)});
+      (M.pen=M.pen||[]).push({ev:aid,pl,type:act,left:PEN});
+      hint(act==='exc'?`${who} sale 2 minutos. Volverá solo a pista al cumplirlos.`:`${who}, descalificado. El equipo juega 2 minutos con uno menos; después habrá que meter a otro jugador.`,act==='roj')}
+    else if(act==='roj')hint(`${who}, descalificado: sale de la lista de jugadores.`,1);
+    render()}
   else if(!['ama','exc','roj'].includes(act))benchWarn(tm,pl);
 }
 function chgDone(){const now=S.edit?null:onNow(),on=S.chg.slice().sort((a,b)=>a-b);S.chg=null;
@@ -559,11 +576,12 @@ function render(){
   const g=$('players');g.className='grid'+(S.team==='them'?' them':'');
   const CHG=`<button class="mini" data-chg="start">${ic('swap')}Cambios</button>`,onC=S.chg||onNow(),chip=p=>{const isOn=onC&&onC.includes(p.n);
     return`<button class="pl${p.gk?' gk':''}${S.chg?(isOn?' in':' bench'):(S.pl===p.n?' on':'')+(onC&&!isOn?' bench':'')}" data-pl="${p.n}"><b>${p.n}</b><small>${S.chg?(isOn?'pista':'banq.'):plStat(p.n)||esc(p.nm)}</small></button>`};
-  const ro=R(),rOn=onC?ro.filter(p=>onC.includes(p.n)):ro,rOff=onC?ro.filter(p=>!onC.includes(p.n)):[];
+  const dqs=dq(),ro=R().filter(p=>!dqs.includes(p.n)),rOn=onC?ro.filter(p=>onC.includes(p.n)):ro,rOff=onC?ro.filter(p=>!onC.includes(p.n)):[];
+  const miss=onC&&!S.chg?Math.min(rOff.length,Math.max(0,7-pens().length-onC.length)):0;
   g.innerHTML=S.team==='us'
     ?rOn.map(chip).join('')+(S.chg
         ?`<div class="gsep"><span>En pista <b>${S.chg.length}</b>/7</span><span class="row" style="gap:6px;flex-wrap:nowrap"><button class="mini" data-chg="cancel">Cancelar</button><button class="mini pri" data-chg="done">Hecho</button></span></div>`
-        :`<div class="gsep"><span>${onC?`Banquillo · en pista <b>${onC.length}</b>`:'Sin marcar quién está en pista'}</span>${CHG}</div>`)+rOff.map(chip).join('')
+        :`<div class="gsep${miss?' miss':''}"><span>${miss?`Falta${miss>1?'n':''} <b>${miss}</b> jugador${miss>1?'es':''} en pista`:pens().length?`<span id="penBar" class="pent">${penTxt()}</span>`:onC?`Banquillo · en pista <b>${onC.length}</b>`:'Sin marcar quién está en pista'}</span>${miss?CHG.replace('class="mini"','class="mini pri"'):CHG}</div>`)+rOff.map(chip).join('')
     :[...M.rivals,'?'].map(n=>`<button class="pl${S.pl===n?' on':''}" data-pl="${n}"><b>${n}</b><small>${n==='?'?'sin dorsal':(rnm(n)||'rival')}</small></button>`).join('')+(S.adding?'<input class="pl" id="addN" type="number" inputmode="numeric" min="0" max="99" aria-label="Dorsal rival nuevo">':'<button class="pl" data-add="1" aria-label="Añadir dorsal rival"><b>+</b><small>dorsal</small></button>')+`<div class="gsep"><span>Jugadores propios en pista</span>${CHG}</div>`;
   if(S.adding&&S.team==='them'){const a=$('addN');if(a)a.focus()}
   $('gkRow').style.display=S.team==='them'?'':'none';
@@ -588,6 +606,7 @@ function render(){
       <button class="tx" data-ev="${e.id}"><b style="${gd==null?'':'color:var(--'+(gd?'good':'bad')+')'}">${a}</b><span>${b}</span></button>
       <button class="del" data-del="${e.id}" aria-label="Borrar evento">${ic('trash')}</button></li>`}).join('')||'<li><span class="tx" style="color:var(--muted)">Sin eventos todavía</span></li>';
   $('demoTag').textContent=M.demo?'Datos de ejemplo':M.date;
+  penBar();bars();
   $('ctxT').innerHTML=`<b>${esc((TM(M.teamId)||{name:''}).name)}</b> contra <b>${esc(M.rival)}</b><span>${esc(mlabel(M))}${SE(M.seasonId)?' · '+esc(SE(M.seasonId).name):''}</span>`;
   if(view==='stats')renderStats();
   save();
@@ -710,6 +729,18 @@ function vTemp(){
       <div class="legend"><span><i style="background:var(--us)"></i>Eficacia de tiro</span><span><i class="dash"></i>Paradas del portero</span></div></div>
     <svg class="chart" viewBox="0 0 ${W} ${H}">${g}${ser('gk','var(--muted)',1,'paradas')}${ser('ef','var(--us)',0,'eficacia')}</svg></section>`+tbl+duel}
 
+/* --- sanciones en curso --- */
+const PEN=120,dq=()=>M.ev.filter(e=>e.kind==='act'&&e.act==='roj'&&e.team==='us'&&e.pl!=null).map(e=>e.pl),pens=()=>(M.pen||[]).filter(p=>p.left>0);
+const penTxt=()=>{const ps=pens();return ps.map(p=>`<i class="${p.type}">${p.type==='exc'?'2′':'Roja'} ${p.pl}${ps.length===1?' '+nm(p.pl):''} · ${fmt(p.left)}</i>`).join('')};
+function penBar(){const el=$('penBar');if(el)el.innerHTML=penTxt()}
+function penTick(){const ps=pens();if(!ps.length)return;let ch=false;
+  ps.forEach(p=>{if(!M.ev.some(e=>e.id===p.ev&&e.kind==='act'&&e.act===p.type)){p.left=0;ch=true;return}
+    if(--p.left>0)return;ch=true;
+    if(p.type==='exc'){const on=onNow();if(on&&!on.includes(p.pl)&&on.length<7&&!dq().includes(p.pl)){
+        M.ev.push({id:M.nid++,t:M.clk[M.per-1],per:M.per,team:'us',kind:'sub',on:[...on,p.pl].sort((a,b)=>a-b)});hint(`${p.pl} ${nm(p.pl)} vuelve a pista tras la exclusión.`)}}
+    else hint('Han pasado los 2 minutos de la roja. Mete a otro jugador con Cambios.',1)});
+  M.pen=M.pen.filter(p=>p.left>0);
+  if(ch)render();else penBar()}
 /* --- jugadores en pista --- */
 const subsOf=m=>m.ev.filter(e=>e.kind==='sub').sort((a,b)=>a.per-b.per||a.t-b.t||a.id-b.id),subs=()=>subsOf(M);
 function lineupAt(per,t,ss,id){let on=null;for(const s of ss||subs()){if(s.per<per||(s.per===per&&(s.t<t||(s.t===t&&(id==null||s.id<id)))))on=s.on;else break}return on}
@@ -833,7 +864,11 @@ function renderStats(){
     ${stTab!=='res'?`<div class="seg">${[['all','Todas las fases'],['pos','Posicional'],['con','Contraataque'],['7m','7 m']].map(([k,l])=>`<button data-fph="${k}" aria-pressed="${F.ph===k}">${l}</button>`).join('')}</div>`:''}`:''}</nav>
     ${{res:vResumen,jug:vJug,tiro:vTiro,gk:vGk,pista:vPista,evo:vEvo,temp:vTemp,ajug:vAJug}[stTab]()}`;
 }
-function setView(v){view=v;$('ctx').hidden=v==='admin';for(const k of['reg','stats','admin'])$(k).hidden=v!==k;
+function bars(){const end=M.clk[M.per-1]>=M.perMin*60,sb=$('stopBar'),show=view==='reg'&&!S.run;sb.hidden=!show;$('ctx').hidden=view==='admin'||show;
+  if(show)sb.innerHTML=ic('pausa')+(end?(M.per<M.nPer?`<b>Fin de la ${M.per}ª parte.</b> Toca aquí para pasar a la ${M.per+1}ª.`:'<b>Partido terminado.</b> El reloj ha llegado al final.')
+    :M.clk[M.per-1]===0?`<b>Reloj parado.</b> Toca aquí para empezar la ${M.per}ª parte.`:'<b>Reloj parado.</b> Toca aquí para reanudar.');
+  sb.classList.toggle('fin',end&&M.per>=M.nPer)}
+function setView(v){view=v;for(const k of['reg','stats','admin'])$(k).hidden=v!==k;bars();
   $('tabReg').setAttribute('aria-selected',v==='reg');$('tabStats').setAttribute('aria-selected',v==='stats');$('tabAdmin').setAttribute('aria-selected',v==='admin');
   if(v==='stats')renderStats();if(v==='admin'){armed=null;renderAdmin()}}
 
@@ -841,9 +876,10 @@ function setView(v){view=v;$('ctx').hidden=v==='admin';for(const k of['reg','sta
 $('tabReg').innerHTML=ic('reg');$('tabAdmin').innerHTML=ic('menu');$('tabStats').innerHTML=ic('chart');$('undo').innerHTML=ic('undo');$('bell').innerHTML=ic('bell');
 document.querySelectorAll('[data-res]').forEach(b=>b.innerHTML=ic(b.dataset.res)+RL[b.dataset.res]);
 $('ctx').onclick=()=>{adTab='games';setView('admin')};$('tabReg').onclick=()=>setView('reg');$('tabAdmin').onclick=()=>setView('admin');$('tabStats').onclick=()=>setView('stats');
-$('clock').onclick=()=>{S.run=!S.run;wake();render()};
+$('clock').onclick=()=>{S.run=!S.run;wake();hint();render()};
+$('stopBar').onclick=()=>{const end=M.clk[M.per-1]>=M.perMin*60;if(end){if(M.per<M.nPer)M.per++;else return}else S.run=true;wake();hint();render()};
 $('per').onclick=()=>{S.run=false;wake();M.per=M.per%M.nPer+1;render()};
-setInterval(()=>{if(S.run&&M){M.clk[M.per-1]++;$('clock').lastChild.textContent=fmt(M.clk[M.per-1]);if(M.clk[M.per-1]%5===0)save();if(M.clk[M.per-1]>=M.perMin*60){S.run=false;wake();render();hint('Fin de la parte. Toca el número de parte para pasar a la siguiente.')}}},1000);
+setInterval(()=>{if(S.run&&M){M.clk[M.per-1]++;$('clock').lastChild.textContent=fmt(M.clk[M.per-1]);penTick();if(M.clk[M.per-1]%5===0)save();if(M.clk[M.per-1]>=M.perMin*60){S.run=false;wake();render()}}},1000);
 $('undo').onclick=()=>{if(hist.length){M.ev=JSON.parse(hist.pop());S.edit=null;render()}};
 $('bell').onclick=()=>{snap();M.ev.push({id:M.nid++,t:M.clk[M.per-1],per:M.per,team:S.team,kind:'pend'});render()};
 $('helpBtn').onclick=()=>$('help').hidden=false;$('helpClose').onclick=()=>$('help').hidden=true;

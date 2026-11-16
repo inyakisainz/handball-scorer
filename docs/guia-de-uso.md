@@ -51,6 +51,7 @@ La regla es siempre la misma: **primero quién, después qué**.
 
 - Revisa el **siete inicial**. La app propone el primer portero y los seis primeros jugadores de la plantilla. Para cambiarlo, pulsa **Cambios** en el bloque Quién, marca los que salen de inicio y pulsa **Hecho**.
 - Pulsa el **reloj** para ponerlo en marcha. Vuelve a pulsarlo para pararlo.
+- Mientras el reloj está parado, el reloj se pone en rojo y aparece una **franja roja** bajo la cabecera: tócala para arrancar. Si anotas algo con el reloj parado, la app te lo recuerda.
 
 ### Un tiro
 
@@ -82,14 +83,16 @@ En móvil, un selector alterna entre **Tiro** y **Otra acción**. En tablet se v
 
 - Los jugadores en pista aparecen arriba; el banquillo, debajo y atenuado.
 - Para un cambio: **Cambios**, toca quién sale y quién entra (máximo siete en pista) y **Hecho**.
-- Una exclusión o una roja saca al jugador de pista automáticamente. Cuando vuelva, márcalo en Cambios.
+- **Exclusión de 2 minutos:** el jugador sale de pista solo y vuelve solo al cumplirse 2 minutos de juego. Mientras dura, se ve la cuenta atrás junto al botón Cambios. El tiempo solo corre con el reloj en marcha y continúa en la parte siguiente si hace falta.
+- **Roja:** el jugador desaparece de la lista para el resto del partido. El equipo juega 2 minutos con uno menos; al cumplirse, la app avisa de que falta un jugador en pista para que metas a otro con Cambios.
+- Si deshaces o borras la sanción, la cuenta atrás se cancela.
 - Si anotas una acción de alguien que figura en el banquillo, la app te avisa para que revises los cambios.
 
 Marcar los cambios es lo que permite calcular los minutos de cada jugador.
 
 ### Partes
 
-El botón con el número de parte (1ª, 2ª) pasa a la siguiente. Cada parte tiene su propio reloj, que se para solo al llegar a su duración.
+Cada parte tiene su propio reloj, que se para solo al llegar a su duración. Entonces la franja indica el fin de la parte: tócala para pasar a la siguiente y vuelve a tocarla para arrancar. También puedes cambiar de parte con el botón del número (1ª, 2ª).
 
 ### Corregir
 
