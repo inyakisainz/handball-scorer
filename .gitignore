@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+node_modules/
+# Copias de datos exportadas desde la app: contienen datos personales
+anotador-copia-*.json
+anotador-partidos-*.csv
