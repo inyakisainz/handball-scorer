@@ -97,6 +97,11 @@ main[hidden],#reg[hidden]{display:none}
 table.srt th button{font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;padding:4px 0;white-space:nowrap}
 table.srt th button[aria-pressed="true"]{color:var(--ink)}
 .ptitle .tag{font-family:var(--body);font-weight:600}
+.about{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.about img{border-radius:14px;flex:none}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin-top:8px;font-size:14px}
+.dl dt{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding-top:2px}
+.dl dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .mbar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;min-width:60px}
 .mbar i{display:block;height:100%;background:var(--us);border-radius:4px}
 .pl.on{background:var(--us);border-color:var(--us);color:#fff} .pl.on small{color:#fff}
@@ -412,6 +417,7 @@ label[hidden]{display:none}
 
 <script>
 const $=id=>document.getElementById(id);
+const APP={v:'12',fecha:'16 de noviembre de 2026',repo:'https://github.com/inyakisainz/handball-scorer',autor:'Iñaki Sainz',perfil:'https://github.com/inyakisainz'};
 const I={
   gol:'<path d="M3 19V6h18v13"/><circle cx="12" cy="14" r="3"/>',
   par:'<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>',
@@ -974,7 +980,7 @@ function renderAdmin(){
     ${addWhat==='team'?`<form id="newT" class="inl"><input id="ntName" maxlength="30" placeholder="Nombre del equipo, por ejemplo Juvenil A" autocomplete="off" required><button class="act pri" type="submit">Crear equipo</button><button class="act" type="button" data-add="">Cancelar</button></form>`:''}
     <div class="ctxrow"><span class="lbl">Temporada</span><select id="selSeason" aria-label="Temporada">${DB.seasons.map(s=>opt(s.id,s.name,s.id===cs)).join('')}</select>
       <span class="note" style="margin:0">${plural(tm.roster.length,'jugador','jugadores')} · ${plural(comps.length,'competición','competiciones')} · ${plural(ms.filter(m=>!m.demo).length,'partido','partidos')}</span></div></section>`;
-  const nav=`<nav class="sub"><div class="seg">${[['games','Partidos'],['comps','Competiciones'],['team','Plantilla'],['rivals','Rivales'],['data','Datos']].map(([k,l])=>`<button data-ad="${k}" aria-pressed="${adTab===k}">${l}</button>`).join('')}</div></nav>`;
+  const nav=`<nav class="sub"><div class="seg">${[['games','Partidos'],['comps','Competiciones'],['team','Plantilla'],['rivals','Rivales'],['data','Datos'],['about','Acerca de']].map(([k,l])=>`<button data-ad="${k}" aria-pressed="${adTab===k}">${l}</button>`).join('')}</div></nav>`;
   let h='';
   if(adTab==='games'){
     const rv=DB.rivals.filter(r=>r.teamId===DB.curTeam).sort((a,b)=>a.name.localeCompare(b.name));
@@ -1049,8 +1055,26 @@ function renderAdmin(){
         <label class="act" style="cursor:pointer">Importar copia<input id="impF" type="file" accept="application/json,.json" hidden></label>
         <button class="act" id="expCsv">Todos los partidos (CSV)</button><button class="act" id="loadDemo">Cargar partido de ejemplo</button></div>
       <p class="note" id="adMsg">La copia incluye todos los equipos, rivales, competiciones y partidos. Importar una copia sustituye todo lo que haya en este dispositivo.</p></section>
-    <section class="panel"><span class="lbl">Estado</span><p class="note">${plural(DB.teams.length,'equipo','equipos')} · ${plural(DB.matches.filter(m=>!m.demo).length,'partido','partidos')} · funcionamiento sin conexión: <b>${navigator.serviceWorker&&navigator.serviceWorker.controller?'listo':'se activa al recargar una vez con conexión'}</b> · almacenamiento protegido: <b id="psSt">comprobando</b></p>
-      <p class="note">Software libre bajo licencia GNU AGPL v3, sin garantía. <a class="lnk" href="https://github.com/inyakisainz/handball-scorer" target="_blank" rel="noopener">Código fuente</a></p></section>`;
+    <section class="panel"><span class="lbl">Estado</span><p class="note">${plural(DB.teams.length,'equipo','equipos')} · ${plural(DB.matches.filter(m=>!m.demo).length,'partido','partidos')} · funcionamiento sin conexión: <b>${navigator.serviceWorker&&navigator.serviceWorker.controller?'listo':'se activa al recargar una vez con conexión'}</b> · almacenamiento protegido: <b id="psSt">comprobando</b></p></section>`;
+  if(adTab==='about'){const a=(u,t)=>`<a class="lnk" href="${u}" target="_blank" rel="noopener">${t}</a>`;
+    h=`<section class="panel"><div class="about"><img src="icon-192.png" alt="" width="64" height="64" onerror="this.remove()"><div><span class="ptitle">Anotador de balonmano</span>
+        <p class="note" style="margin-top:4px">Handball Scorer · versión <b>${APP.v}</b> · ${APP.fecha}</p></div></div>
+      <p class="note">Aplicación para anotar partidos de balonmano en directo y analizarlos después. Funciona sin conexión y guarda los datos solo en este dispositivo.</p></section>
+    <section class="panel"><span class="lbl">Autor y licencia</span>
+      <dl class="dl"><dt>Autor</dt><dd>${a(APP.perfil,APP.autor)}</dd>
+        <dt>Copyright</dt><dd>© 2026 ${APP.autor}</dd>
+        <dt>Licencia</dt><dd>${a(APP.repo+'/blob/main/LICENSE','GNU Affero General Public License, versión 3')}</dd>
+        <dt>Código fuente</dt><dd>${a(APP.repo,'github.com/inyakisainz/handball-scorer')}</dd></dl>
+      <p class="note">Software libre: puedes usarlo, estudiarlo, modificarlo y redistribuirlo bajo los términos de la licencia. Si distribuyes una versión modificada o la ofreces como servicio web, debes publicar su código con la misma licencia. Se distribuye sin ninguna garantía.</p></section>
+    <section class="panel"><span class="lbl">Ayuda</span>
+      <dl class="dl"><dt>Guía de uso</dt><dd>${a(APP.repo+'/blob/main/docs/guia-de-uso.md','Cómo anotar y leer las estadísticas')}</dd>
+        <dt>Instalación</dt><dd>${a(APP.repo+'/blob/main/docs/instalacion.md','Instalarla como app y usarla sin conexión')}</dd>
+        <dt>Novedades</dt><dd>${a(APP.repo+'/blob/main/CHANGELOG.md','Historial de versiones')}</dd>
+        <dt>Errores e ideas</dt><dd>${a(APP.repo+'/issues','Abrir una incidencia en GitHub')}</dd></dl></section>
+    <section class="panel"><span class="lbl">Privacidad y créditos</span>
+      <p class="note">No hay cuentas ni servidor: los equipos, jugadores y partidos se guardan en el almacenamiento de este navegador y no se envían a ningún sitio. La única conexión externa es la descarga de las tipografías la primera vez.</p>
+      <p class="note">Tipografías Barlow y Barlow Condensed, de Jeremy Tribby, bajo licencia SIL Open Font License, servidas por Google Fonts.</p>
+      <p class="note">Proyecto personal, sin relación con ninguna federación ni con otras aplicaciones de estadísticas.</p></section>`}
   $('admin').innerHTML=strip+nav+h;
   const f=addWhat==='team'?$('ntName'):addWhat==='comp'?$('ncName'):addWhat==='season'?$('nsName'):null;if(f)f.focus();
   if(adTab==='data'&&navigator.storage&&navigator.storage.persisted)navigator.storage.persisted().then(p=>{const e=$('psSt');if(e)e.textContent=p?'sí':'no garantizado'}).catch(()=>{});

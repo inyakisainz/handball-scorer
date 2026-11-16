@@ -8,7 +8,7 @@ Arriba hay tres iconos y el marcador:
 | --- | --- |
 | Portería | **Registro:** donde se anota el partido |
 | Barras | **Estadísticas:** del partido y acumuladas |
-| Personas | **Gestión:** partidos, competiciones, plantilla, rivales y datos |
+| Personas | **Gestión:** partidos, competiciones, plantilla, rivales, datos y Acerca de (versión, licencia y ayuda) |
 
 Bajo la cabecera, una barra indica siempre qué partido está abierto: equipo, rival, competición y temporada. Tocarla lleva a la gestión.
 

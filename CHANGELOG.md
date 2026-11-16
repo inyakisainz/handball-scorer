@@ -1,6 +1,9 @@
 # Historial de versiones
 
-El número coincide con `VERSION` en `public/sw.js`.
+El número coincide con `VERSION` en `public/sw.js` y con `APP.v` en `public/index.html`.
+
+## v12 (2026-11-16)
+- Pestaña Acerca de: versión, autor, licencia, código fuente, ayuda y privacidad.
 
 ## v11 (2026-11-16)
 - Roja: sin cuenta atrás. El jugador queda fuera del partido y la app pide al momento meter a otro.

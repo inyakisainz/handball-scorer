@@ -68,7 +68,7 @@ python3 -m http.server 8080
 
 Abre `http://localhost:8080`. En `localhost` el navegador permite el service worker sin HTTPS.
 
-Al publicar una versión nueva, cambia `VERSION` en `public/sw.js` y añade una entrada en `CHANGELOG.md`. Los dispositivos reciben la versión nueva la segunda vez que abren la app con conexión.
+Al publicar una versión nueva, cambia `VERSION` en `public/sw.js` y `APP.v` y `APP.fecha` en `public/index.html` (es lo que muestra la pestaña Acerca de), y añade una entrada en `CHANGELOG.md`. Los dispositivos reciben la versión nueva la segunda vez que abren la app con conexión.
 
 ## Licencia
 
@@ -78,4 +78,4 @@ Este programa es software libre: puedes redistribuirlo y modificarlo bajo los t�
 
 Se distribuye con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de comerciabilidad o de adecuación a un propósito particular. Consulta la licencia para más detalles.
 
-En la práctica: puedes usarla, estudiarla, modificarla y redistribuirla, también con fines comerciales. Si distribuyes una versión modificada, o la ofreces a otras personas como servicio web, debes poner a su disposición el código fuente de esa versión bajo esta misma licencia. La propia app enlaza a este repositorio desde la pestaña Datos.
+En la práctica: puedes usarla, estudiarla, modificarla y redistribuirla, también con fines comerciales. Si distribuyes una versión modificada, o la ofreces a otras personas como servicio web, debes poner a su disposición el código fuente de esa versión bajo esta misma licencia. La propia app enlaza a este repositorio desde la pestaña Acerca de.
